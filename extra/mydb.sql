@@ -274,5 +274,60 @@ ON a.supervisor_id =b.employee_id;
 --the fields in a view are fields from one or more real tables in the db
 --not real tables but can be interacted with as if they were 
 
+CREATE VIEW employee_attendance AS 
+SELECT first_name , last_name 
+FROM employees;
 
+SELECT * FROM employee_attendance;
+
+SELECT * from customers;
+
+ALTER TABLE customers
+ADD COLUMN email VARCHAR(50);
+
+UPDATE customers
+SET email ="PPuff@gmail.com"
+WHERE customer_id=4;
+
+CREATE VIEW custumer_emails AS
+SELECT email
+FROM customers;
+
+SELECT * from custumer_emails;
+
+INSERT INTO customers
+VALUES (6,"Pearl","Krabs",NULL,"PKrabs@gmail.com");
+
+--INDEX (BTree data structure )
+--Indexes are used to find values within a specific column more quickly 
+--MySql normally searches sequentially through a COLUMN
+--The longer the column the more expensive the operation is 
+--Update takes more time Than SELECT
+
+SELECT * FROM transactions;
+
+SHOW INDEXES FROM customers;
+
+--to create an INDEX
+CREATE INDEX last_name_idx
+ON customers(last_name);
+
+SELECT * FROM customers
+WHERE last_name = "Puff";
+
+--multi column INDEX
+CREATE INDEX last_name_first_name_idx 
+ON customers(last_name, first_name);
+
+SHOW INDEXES FROM customers;
+
+ALTER TABLE customers
+DROP INDEX last_name_idx;
+
+SELECT * FROM customers
+WHERE last_name ="Puff" AND first_name ="Poppy";
+
+--SUBQUERIES
+--a query within another query 
+--query (subquery)
 
