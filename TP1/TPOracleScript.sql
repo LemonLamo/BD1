@@ -1,51 +1,15 @@
+use mydb;
+
 *==============================================================*/
 /* Database name:  TP  BD_CINEMA                                         */
 /*==============================================================*/
-USE mydb;
-
-drop index AIMER_FK
-/
 
 
-drop index JOUER_FK
-/
 
-
-drop index PRODUIR_FK
-/
-
-
-drop index PROJETER_FK
-/
-
-
-drop index VOIR_FK
-/
-
-
-drop table AIME cascade constraints
-/
-
-
-drop table VU cascade constraints
-/
-
-
-drop table SEANCE cascade constraints
-/
-
-
-drop table PRODUIT cascade constraints
-/
-
-
-drop table JOUE cascade constraints
-/
-
-
-drop table FILM cascade constraints
-/
-
+ CREATE TABLE AIME (
+ NOM_AMATEUR VARCHAR(30) ,
+ TITRE VARCHAR(40)
+ );
 
 /*==============================================================*/
 /* Table: FILM                                                  */
@@ -102,11 +66,16 @@ create table PRODUIT  (
 CREATE TABLE Seance (
      TITRE VARCHAR(40) NOT NULL,
     Nom_salle VARCHAR(40) NOT NULL,
-    Temps VARCHAR(40) NOT NULL,
-    Langue VARCHAR(40) NOT NULL
+    Heure_dif FLOAT NOT NULL,
+    Langue VARCHAR(40) NOT NULL,
 );
 
-CREATE TABLE Vu (
+/*==============================================================*/
+/* Table: VU                                            */
+/*==============================================================*/
+
+
+CREATE TABLE VU (
    NOM_PRODUCTEUR VARCHAR(40),
    TITRE VARCHAR(40)
 );
@@ -118,5 +87,21 @@ create  index PRODUIR_FK on PRODUIT (
    TITRE ASC
 )
 /
+/*modification du schema et des contraintes*/
+/*avec ALTER TABLE NomTable 
+pour modifier le type d'une colonne : MODIFY nomAttribut nvtype
+pour Ajouter une colonne : ADD Nomcolonne/attribut
+Pour ajouter des contraintes : ADD CONSTRAINT */
+
+DESCRIBE AIME;
+ALTER TABLE AIME MODIFY 
+   TITRE VARCHAR(60)
+;
+
+ALTER TABLE seance
+ADD CONSTRAINT chk_temps CHECK (Heure_dif >= 13.00);
+
+
+
 
 

@@ -331,3 +331,43 @@ WHERE last_name ="Puff" AND first_name ="Poppy";
 --a query within another query 
 --query (subquery)
 
+SELECT * FROM employees;
+
+SELECT first_name, last_name, hourly_pay, (SELECT AVG(hourly_pay) FROM employees) AS avg_pay FROM employees;
+
+
+
+SELECT first_name, last_name, hourly_pay FROM employees
+WHERE hourly_pay > 15.45;
+
+SELECT  FROM transactions;
+
+SELECT customer_id FROM transactions
+WHERE customer_id IS NOT NULL;
+--we dont know who the customers are so we use subqueries 
+
+SELECT first_name, last_name 
+FROM customers
+WHERE customer_id IN (1,2,3);
+
+--basically subqueries is we execute the subquery first and whataver
+--result we get it will be used in the larger query (outer query)
+
+--GROUP BY clause = aggregate all rows by a specific column
+-- often used with aggregate functions 
+-- ex. SUM(), MIN , MAX , AVG , COUNT ...
+
+SELECT * FROM transactions;
+
+ALTER TABLE transactions
+ADD COLUMN order_date DATE
+AFTER customer_id;
+
+INSERT INTO transactions (order_date) VALUES 
+('2023-01-01'),
+('2023-01-01'),
+('2023-01-02'),
+('2023-01-02'),
+('2023-01-03'),
+('2023-01-03');
+

@@ -1,3 +1,5 @@
+USE  mydb;
+
 INSERT INTO Film VALUES ('Body Guard', 120, 'US', 'Mark Gordon');
 INSERT INTO Film VALUES ('Les Incorruptibles', 160, 'US', 'Rickley Moore');
 INSERT INTO Film VALUES ('Perfect World', 150, 'US', 'Clint Eastwood');
@@ -61,4 +63,11 @@ INSERT INTO Vu VALUES ('Tom Cruise', 'Top Gun');
 INSERT INTO Vu VALUES ('Tom Cruise', 'Men');
 INSERT INTO Vu VALUES ('Tom Hanks', 'Men');
 
+
+SELECT * FROM film;
+SELECT * FROM joue;
+SELECT * FROM seance;
+/
 SELECT * FROM Vu;
+
+
