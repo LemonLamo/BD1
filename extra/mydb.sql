@@ -344,7 +344,9 @@ WHERE last_name ="Puff" AND first_name ="Poppy";
 
 SELECT * FROM employees;
 
-SELECT first_name, last_name, hourly_pay, (SELECT AVG(hourly_pay) FROM employees) AS avg_pay FROM employees;
+SELECT first_name, last_name, hourly_pay, 
+(SELECT AVG(hourly_pay) FROM employees) AS avg_pay 
+FROM employees;
 
 
 
@@ -437,8 +439,118 @@ GROUP BY employee_id WITH ROLLUP;
 --ON DELETE SET NULL= when a FK is deleted, replace FK with NULL
 --ON DELETE CASCADE = when a FK is deleted, delete row
 
+SELECT * FROM customers;
+
+SET foreign_key_checks =1;
+
+DELETE FROM customers
+WHERE customer_id=4 ;
+--we can't delete because customer_id is a foreign key
+
+INSERT INTO customers
+VALUES (4,"Poppy","Puff",2,"PPuff@gmail.com");
+
+--let's say we are recreating the transaction table and add the ON DELETE Clause 
+
+--we do have a foreign key constraint but let's drop it real quick
+ALTER TABLE transactions DROP FOREIGN KEY transactions_ibfk_1;
+
+SELECT CONSTRAINT_NAME
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE TABLE_NAME = 'transactions' AND COLUMN_NAME = 'customer_id';
+--this was to find the name of my foreign key customer_id
+
+ALTER TABLE transactions 
+ADD CONSTRAINT fk_customer_id
+FOREIGN KEY(customer_id) REFERENCES customers(customer_id) 
+ON DELETE ;
+
+SELECT  * FROM transactions;
+
+DELETE FROM customers
+WHERE customer_id =4;
+
+--let's remove the key with the on delete set null constraint 
+
+ALTER TABLE transactions
+DROP FOREIGN KEY fk_customer_id;
+
+--now let's try to add another foreign key with ON DELETE CASCASE which will delete the whole row 
+
+ALTER TABLE transactions
+ADD CONSTRAINT fk_transactions_id
+FOREIGN KEY (customer_id) REFERENCES customers(customer_id) 
+ON DELETE CASCADE;
+
+--let's add the transaction real quick
+UPDATE transactions
+SET customer_id=4
+WHERE transaction_id =1005;
+
+SELECT * FROM transactions;
+
+DELETE FROM customers
+WHERE customer_id=4;--so the whole row is deleted now 
+
+--Stored procedure = is prepared SQL code that you can save 
+--                   it's great if there'sa query that you write often
 
 
+SELECT DISTINCT first_name, last_name
+FROM transactions
+INNER JOIN customers
+ON transactions.customer_id = customers.customer_id;
+
+--this statement is very verbose if we had to write it often we could just save it as a stored procedure
+
+DELIMITER $$
+CREATE PROCEDURE get_customers(
+)
+BEGIN
+  SELECT * FROM customers;
+END $$
+DELIMITER;
+
+--to invoke the procedure 
+
+CALL get_customers();
+
+DROP PROCEDURE get_customers;
+
+--procedure with parameters 
+DELIMITER $$
+CREATE PROCEDURE find_customer(IN id INT)
+BEGIN 
+   SELECT * FROM customers
+   WHERE customer_id = id;
+END
+DELIMITER ;
+
+SELECT * FROm customers;
+CALL find_customer(3);
+
+DROP Procedure find_customer;
 
 
+DELIMITER $$
+CREATE PROCEDURE find_customer(IN f_name VARCHAR(50),
+                              IN l_name VARCHAR(50))
+BEGIN 
+   SELECT * 
+   FROM customers
+   WHERE first_name = f_name AND last_name = l_name;
+END $$
+DELIMITER ;
+
+CALL find_customer("Larry", "Lobster");
+
+--stored procedures = reduces network traffic 
+--                    increses perfmances
+ --                    secure , admin can grant permission to use
+ --                   (downside) increses memory usage of every connection
+
+
+ --TRIGGERS = When an event happens , do something 
+            --ex : (INSERT , UPDATE, DELETE)
+            --checks data , handles errors , auditing tables etc..
 
