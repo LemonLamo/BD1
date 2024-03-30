@@ -109,10 +109,21 @@ CREATE TABLE transactions (
    transaction_id INT PRIMARY KEY AUTO_INCREMENT,
    amount DECIMAL(5,2),
    customer_id INT,
-   FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+   FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+   order_date DATE
 );
 
 SELECT * FROM transactions;
+
+INSERT INTO transactions (transaction_id, amount, customer_id, order_date) 
+VALUES 
+   (1000, '4.99', 3, '2023-01-01'),
+   (1001, '2.89', 2, '2023-01-01'),
+   (1002, '3.38', 3, '2023-01-02'),
+   (1003, '4.99', 1, '2023-01-02'),
+   (1004, '1.00', NULL, '2023-01-03'),
+   (1005, '2.49', 4, '2023-01-03'),
+   (1006, '5.48', NULL, '2023-01-04');
 
 INSERT INTO transactions (amount, customer_id)
 VALUES (8.89, 3),(3.45, 2),(4.56, 3),(8.89, 1);
@@ -359,15 +370,75 @@ WHERE customer_id IN (1,2,3);
 
 SELECT * FROM transactions;
 
-ALTER TABLE transactions
-ADD COLUMN order_date DATE
-AFTER customer_id;
+UPDATE transactions
+SET order_date = CASE 
+                    WHEN transaction_id = 1002 THEN '2023-01-02'
+                    WHEN transaction_id = 1003 THEN '2023-01-02'
+                    WHEN transaction_id = 1004 THEN '2023-01-03'
+                    WHEN transaction_id = 1005 THEN '2023-01-03'
+                    WHEN transaction_id = 1006 THEN '2023-01-04'
+                    -- Add more WHEN conditions as needed for other transactions
+                END
+WHERE transaction_id IN (1002, 1003, 1004, 1005, 1006);
 
-INSERT INTO transactions (order_date) VALUES 
-('2023-01-01'),
-('2023-01-01'),
-('2023-01-02'),
-('2023-01-02'),
-('2023-01-03'),
-('2023-01-03');
+--he needs to know much money he made per day 
+--calculating the sum of every amount per day
+
+SELECT  SUM(amount) , order_date FROM transactions
+GROUP BY order_date;
+
+SELECT MAX(amount) , order_date FROM transactions
+GROUP BY order_date;
+
+SELECT MIN(amount) , order_date FROM transactions
+GROUP BY order_date;
+
+SELECT AVG(amount) , order_date FROM transactions
+GROUP BY order_date;
+
+
+SELECT COUNT(amount) , order_date FROM transactions
+GROUP BY order_date;
+--the sum of how much each customer has spent in total
+SELECT SUM(amount), customer_id FROM transactions
+GROUP BY customer_id;
+--we can do the same for the min , max , avg and count 
+
+--using a where clause along with the groupby clause 
+--but we use the keyword 'HAVING'
+
+SELECT COUNT(amount) , customer_id FROM transactions
+GROUP BY customer_id
+HAVING COUNT(amount) >1 AND customer_id IS NOT NULL;
+
+--ROLLUP CLAUSE , extension of the GROUP BY CLAUSE
+--produces another row and shows the GRAND TOTAL (super-aggregate value)
+
+SELECT * FROM transactions;
+
+--we first group each amount by order_date and then produce a grand total
+
+SELECT SUM(amount), order_date
+FROM transactions
+GROUP BY order_date WITH ROLLUP;
+--we add an additional row for the grand total
+
+SELECT COUNT(transaction_id) AS "nb of orders", customer_id
+FROM transactions
+GROUP BY customer_id WITH ROLLUP;
+
+--grouping employees by employee id then display the rollup of their hourly pay
+--how much are we spending on our employees per hour as a business ?
+
+SELECT SUM(hourly_pay) AS "hourly-pay", employee_id FROM employees
+GROUP BY employee_id WITH ROLLUP;
+
+--ON DELETE CLAUSE 
+--ON DELETE SET NULL= when a FK is deleted, replace FK with NULL
+--ON DELETE CASCADE = when a FK is deleted, delete row
+
+
+
+
+
 
