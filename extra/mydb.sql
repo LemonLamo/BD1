@@ -554,3 +554,48 @@ CALL find_customer("Larry", "Lobster");
             --ex : (INSERT , UPDATE, DELETE)
             --checks data , handles errors , auditing tables etc..
 
+ALTER TABLE employees
+ADD COLUMN salary DECIMAL(10,2) AFTER hourly_pay;
+
+SELECT * FROM employees;
+
+UPDATE employees
+SET salary = hourly_pay * 2080;
+
+CREATE TRIGGER before_hourly_pay_update
+BEFORE UPDATE ON employees
+FOR EACH ROW 
+SET NEW.salary = (NEW.hourly_pay*2080);
+
+SHOW TRIGGERS;
+
+UPDATE employees
+SET hourly_pay =50 
+WHERE employee_id=1;
+
+SELECT * FROM employees;
+
+--mr krabs is feeling generous so we can now add one more dollar to the hourly pay
+
+UPDATE employees
+SET hourly_pay = hourly_pay +1;
+
+--creating a trigger for when we insert a new employee 
+--more specefically when we insert a new hourly pay
+
+DELETE FROM employees
+WHERE employee_id =6;
+
+CREATE TRIGGER before_hourly_pay_insert
+BEFORE INSERT ON employees
+FOR EACH ROW 
+SET NEW.salary = (NEW.hourly_pay * 2080);
+
+INSERT INTO employees
+VALUES (6,"Sheldon","Plankton",10,NULL,"janitor","2023-01-07",5);
+
+SELECT* FROM employees;
+
+
+--another exemple 
+
