@@ -597,5 +597,4 @@ VALUES (6,"Sheldon","Plankton",10,NULL,"janitor","2023-01-07",5);
 SELECT* FROM employees;
 
 
---another exemple 
-
+--another exemple creating the table expenses

@@ -71,3 +71,6 @@ SELECT * FROM seance;
 SELECT * FROM Vu;
 
 
+
+DROP TABLE Vu;
+

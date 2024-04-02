@@ -1,0 +1,285 @@
+mysql> CREATE USER BDDAdmin IDENTIFIED BY TPAdmin;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'TPAdmin' at line 1
+
+mysql> CREATE USER 'BDDAdmin' IDENTIFIED BY 'TPAdmin';
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> GRANT ALL PRIVILEGES TO 'BDDAdmin';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'TO 'BDDAdmin'' at line 1
+
+mysql> GRANT ALL PRIVILEGES TO BDDAdmin;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'TO BDDAdmin' at line 1
+
+mysql> GRANT ALL PRIVILEGES ON * .* TO 'BDDAdmin';
+Query OK, 0 rows affected (0.02 sec)
+
+
+mysql> exit
+
+Microsoft Windows [version 10.0.22631.3374]
+(c) Microsoft Corporation. Tous droits réservés.
+
+C:\Users\khbic> mysql host -u BDDAdmin -p
+'mysql' n’est pas reconnu en tant que commande interne
+ou externe, un programme exécutable ou un fichier de commandes.
+
+C:\Users\khbic>cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+
+C:\Program Files\MySQL\MySQL Server 8.0\bin> mysql -u BDDAdmin -p
+Enter password: *******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 31
+Server version: 8.0.36 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> CREATE TABLE ETUDIANT (MATRICULE_ETU INTEGER NOT NULL, NOM_ETU VARCHAR(30) NOT NULL ,PRENOM_ENS VARCHAR(30) NOT NULL, DATE_NAISSANCE DATE NOT NULL, CONSTRAINT PK_UNITE PRIMARY KEY (MATRICULE_ENS) );
+ERROR 1046 (3D000): No database selected
+
+mysql> use tp_bdd;
+Database changed
+
+mysql> CREATE TABLE ETUDIANT (MATRICULE_ETU INTEGER NOT NULL, NOM_ETU VARCHAR(30) NOT NULL ,PRENOM_ENS VARCHAR(30) NOT NULL, DATE_NAISSANCE DATE NOT NULL, CONSTRAINT PK_UNITE PRIMARY KEY (MATRICULE_ENS) );
+ERROR 1072 (42000): Key column 'MATRICULE_ENS' doesn't exist in table
+
+mysql> CREATE TABLE ETUDIANT (MATRICULE_ETU INTEGER NOT NULL, NOM_ETU VARCHAR(30) NOT NULL ,PRENOM_ENS VARCHAR(30) NOT NULL, DATE_NAISSANCE DATE NOT NULL, CONSTRAINT PK_UNITE PRIMARY KEY (MATRICULE_ETU) );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> SELECT * FROM ETUDIANT;
+Empty set (0.00 sec)
+
+mysql> CREATE TABLE ENSEIGNANT (MATRICULE_ENS INTEGER NOT NULL, NOM_ENS VARCHAR(30) NOT NULL , PRENOM_ENS VARCHAR(30) NOT NULL , AGE INTEGER NOT NULL , CONSTRAINT PK_UNITE PRIMARY KEY (MATRICULE_ENS) );
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> CREATE TABLE UNITE (CODE_UNITE VARCHAR(30) NOT NULL, LIBELLE VARCHAR(30) NOT NULL , NBR HEURES INTEGER NOT NULL, MATRICULE_ENS INTEGER NOT NULL, CONSTRAINT PK_UNITES PRIMARY KEY(CODE_UNITE), CONSTRAINT FK_UNITE ENSEIGNANT FOREIGN KEY(MATRICULE_ENS) REFERENCES ENSEIGNANT (MATRICULE_ENS));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'HEURES INTEGER NOT NULL, MATRICULE_ENS INTEGER NOT NULL, CONSTRAINT PK_UNITES PR' at line 1
+
+mysql> CREATE TABLE UNITE ( CODE_UNITE VARCHAR(30) NOT NULL, LIBELLE VARCHAR(30) NOT NULL , NBR_HEURES INTEGER NOT NULL, MATRICULE_ENS INTEGER NOT NULL, CONSTRAINT PK_UNITES PRIMARY KEY(CODE_UNITE), CONSTRAINT FK_UNITE ENSEIGNANT FOREIGN KEY(MATRICULE_ENS) REFERENCES ENSEIGNANT (MATRICULE_ENS));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ENSEIGNANT FOREIGN KEY(MATRICULE_ENS) REFERENCES ENSEIGNANT (MATRICULE_ENS))' at line 1
+
+mysql> CREATE TABLE UNITE ( CODE_UNITE VARCHAR(30) NOT NULL, LIBELLE VARCHAR(30) NOT NULL , NBR_HEURES INTEGER NOT NULL, MATRICULE_ENS INTEGER NOT NULL, CONSTRAINT PK_UNITES PRIMARY KEY(CODE_UNITE), CONSTRAINT FK_UNITE_ENSEIGNANT FOREIGN KEY(MATRICULE_ENS) REFERENCES ENSEIGNANT (MATRICULE_ENS));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> CREATE TABLE ETUDIANTUNITE ( MATRICULE_ETU INTEGER NOT NULL, CODE_UNITE VARCHAR(30) NOT NULL, NOTE_CC INTEGER NOT NULL, NOTE_TP INTEGER NOT NULL, NOTE_EXAMEN INT NOT NULL, CONSTRAINT PK_ETUDIANTUNITE PRIMARY KEY (MATRICULE_ETU,CODE_UNITE), CONSTRAINT FK_ETUDIANTUNITE_ETUDIANT FOREIGN KEY(MATRICULE_ETU REFERENCES ETUDIANT (MATRICULE_ETU), CONSTRAINT FK_ETUDIANTUNITE_UNITE FOREIGN KEY (CODE_UNITE REFERENCES UNITE (CODE_UNITE) );
+
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'REFERENCES ETUDIANT (MATRICULE_ETU), CONSTRAINT FK_ETUDIANTUNITE_UNITE FOREIGN K' at line 1
+
+mysql> CREATE TABLE ETUDIANTUNITE ( MATRICULE_ETU INTEGER NOT NULL, CODE_UNITE VARCHAR(30) NOT NULL, NOTE_CC INTEGER NOT NULL, NOTE_TP INTEGER NOT NULL, NOTE_EXAMEN INT NOT NULL, CONSTRAINT PK_ETUDIANTUNITE PRIMARY KEY (MATRICULE_ETU,CODE_UNITE), CONSTRAINT FK_ETUDIANTUNITE_ETUDIANT FOREIGN KEY(MATRICULE_ETU REFERENCES ETUDIANT (MATRICULE_ETU), CONSTRAINT FK_ETUDIANTUNITE_UNITE FOREIGN KEY (CODE_UNITE) REFERENCES UNITE (CODE_UNITE) );
+
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'REFERENCES ETUDIANT (MATRICULE_ETU), CONSTRAINT FK_ETUDIANTUNITE_UNITE FOREIGN K' at line 1
+
+mysql> CREATE TABLE ETUDIANTUNITE ( MATRICULE_ETU INTEGER NOT NULL, CODE_UNITE VARCHAR(30) NOT NULL, NOTE_CC INTEGER NOT NULL, NOTE_TP INTEGER NOT NULL, NOTE_EXAMEN INT NOT NULL, CONSTRAINT PK_ETUDIANTUNITE PRIMARY KEY (MATRICULE_ETU,CODE_UNITE), CONSTRAINT FK_ETUDIANTUNITE_ETUDIANT FOREIGN KEY(MATRICULE_ETU REFERENCES ETUDIANT (MATRICULE_ETU), CONSTRAINT FK_ETUDIANTUNITE_UNITE FOREIGN KEY (CODE_UNITE) REFERENCES UNITE (CODE_UNITE) );
+
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'REFERENCES ETUDIANT (MATRICULE_ETU), CONSTRAINT FK_ETUDIANTUNITE_UNITE FOREIGN K' at line 1
+
+mysql> CREATE TABLE ETUDIANTUNITE (MATRICULE_ETU INTEGER NOT NULL, CODE_UNITE VARCHAR(30) NOT NULL, NOTE_CC INTEGER NOT NULL, NOTE_TP INTEGER NOT NULL, NOTE_EXAMEN INTEGER NOT NULL, CONSTRAINT PK_ETUDIANTUNITE PRIMARY KEY (MATRICULE_ETU, CODE_UNITE), CONSTRAINT FK_ETUDIANTUNITE_ETUDIANT FOREIGN KEY (MATRICULE_ETU) REFERENCES ETUDIANT (MATRICULE_ETU), CONSTRAINT FK_ETUDIANTUNITE_UNITE FOREIGN KEY (CODE_UNITE) REFERENCES UNITE (CODE_UNITE));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> CREATE INDEX Etudiant_FK ON Etudiant (nom_etu ASC);
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE INDEX Enseignant_FK ON Enseignant (nom_ens DESC);
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> exit 
+
+mysql> GRANT SELECT ON Etudiant TO Etudiant;
+ERROR 1046 (3D000): No database selected
+
+mysql> use tp_bdd;
+Database changed
+
+mysql> GRANT SELECT ON Etudiant TO Etudiant;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE USER Enseignant IDENTIFIED BY 'TPEnseignant';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> GRANT SELECT, INSERT ON Enseignant TO Enseignant;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> ALTER TABLE Etudiant ADD (Adresse VARCHAR(100));
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE Enseignant DROP COLUMN age;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE Etudiant ADD CONSTRAINT VERIF_MAT CHECK (MATRICULE_ETU > 20190000 AND MATRICULE_ETU < 20199999);
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE Etudiant MODIFY PRENOM_ETU VARCHAR(25);
+ERROR 1054 (42S22): Unknown column 'PRENOM_ETU' in 'etudiant'
+
+mysql> ALTER TABLE Etudiant MODIFY PRENOM VARCHAR(25);
+ERROR 1054 (42S22): Unknown column 'PRENOM' in 'etudiant'
+
+mysql> ALTER TABLE Etudiant MODIFY PRENOM VARCHAR(30);
+ERROR 1054 (42S22): Unknown column 'PRENOM' in 'etudiant'
+
+mysql> ALTER TABLE `etudiant` 
+    -> CHANGE `PRENOM_ENS` `PRENOM_ETU` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL ;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE Etudiant MODIFY PRENOM_ETU VARCHAR(30);
+Query OK, 0 rows affected (0.07 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Etudiant VALUES (20190001,'BOUSSAI','MOHAMED','12/01/2000','Alger');
+ERROR 1292 (22007): Incorrect date value: '12/01/2000' for column 'DATE_NAISSANCE' at row 1
+
+mysql> INSERT INTO Etudiant VALUES (20190001,'BOUSSAI','MOHAMED',12/01/2000,'Alger');
+ERROR 1292 (22007): Incorrect date value: '0.006000000000000000' for column 'DATE_NAISSANCE' at row 1
+
+mysql> INSERT INTO Etudiant (MATRICULE_ETU, NOM, PRENOM, DATE_NAISSANCE, ADRESSE) VALUES (20190001, 'BOUSSAI', 'MOHAMED', '2000-01-12', 'Alger');
+ERROR 1054 (42S22): Unknown column 'NOM' in 'field list'
+
+mysql> INSERT INTO Etudiant (MATRICULE_ETU, NOM_ETU, PRENOM_ETU, DATE_NAISSANCE, ADRESSE) VALUES (20190001, 'BOUSSAI', 'MOHAMED', '2000-01-12', 'Alger');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Etudiant VALUES (20190002,'CHAID','LAMIA', '01/10/1999','Batna');
+ERROR 1292 (22007): Incorrect date value: '01/10/1999' for column 'DATE_NAISSANCE' at row 1
+
+mysql> INSERT INTO Etudiant (MATRICULE_ETU, NOM_ETU, PRENOM_ETU, DATE_NAISSANCE, ADRESSE) VALUES (20190002, 'CHAID', 'LAMIA', '1999-10-01', 'Batna');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Etudiant (MATRICULE_ETU, NOM_ETU, PRENOM_ETU, DATE_NAISSANCE, ADRESSE) VALUES (20190003, 'BRAHIMI', 'SOUAD', '2000-11-18', 'S tif');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Etudiant (MATRICULE_ETU, NOM_ETU, PRENOM_ETU, DATE_NAISSANCE, ADRESSE) VALUES (20190004, 'LAMA', 'SAID', '1999-05-23', 'Oran');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Enseignant VALUES (20190001, 'HAROUNI', 'AMINE');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Enseignant VALUES (19990011, 'FATHI', 'OMAR');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Enseignant VALUES (19980078, 'BOUZIDANE', 'FARAH');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Enseignant VALUES (20170015, 'ARABI', 'ZOUBIDA');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO Unite VALUES ('FEI0001', 'POO', 6, 20190001);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Unite VALUES ('FEI0002', 'BDD', 6, 19990011);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Unite VALUES ('FEI0003', 'RESEAU', 3, 20170015);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Unite VALUES ('FEI0004', 'SYSTEME', 6, 19980078);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO EtudiantUnite VALUES (20190001, 'FEI0001', 10, 15, 9);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO EtudiantUnite VALUES (20190002, 'FEI0001', 20, 13, 10);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO EtudiantUnite VALUES (20190004, 'FEI0001', 13, 17, 16);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO EtudiantUnite VALUES (20190002, 'FEI0002', 10, 16, 17);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO EtudiantUnite VALUES (20190003, 'FEI0002', 9, 8, 15);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO EtudiantUnite VALUES (20190004, 'FEI0002', 15, 9, 20);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO EtudiantUnite VALUES (20190002, 'FEI0004', 12, 18, 14);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO EtudiantUnite VALUES (20190003, 'FEI0004', 17, 12, 15);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO EtudiantUnite VALUES (20190004, 'FEI0004', 12, 13, 20);
+Query OK, 1 row affected (0.00 sec)
+
+mysql>  UPDATE EtudiantUnite
+    ->  SET note_CC = note_CC +2
+    ->  WHERE MATRICULE_ETU IN ( SELECT MATRICULE_ETU FROM ETUDIANT
+    -> WHERE NOM_ETU LIKE 'B%' );
+Query OK, 3 rows affected (0.01 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+mysql> UPDATE EtudiantUnite
+    ->  SET NOTE_EXAMEN = 0
+    ->  WHERE CODE_UNITE IN ( SELECT CODE_UNITE FROM UNITE
+    -> WHERE LIBELLE = 'SYSTEME' );
+Query OK, 3 rows affected (0.01 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+mysql> SELECT * FROM Etudiants;
+ERROR 1146 (42S02): Table 'tp_bdd.etudiants' doesn't exist
+
+mysql> SELECT * FROM etudiant
+    -> ;
++---------------+---------+------------+----------------+---------+
+| MATRICULE_ETU | NOM_ETU | PRENOM_ETU | DATE_NAISSANCE | Adresse |
++---------------+---------+------------+----------------+---------+
+|      20190001 | BOUSSAI | MOHAMED    | 2000-01-12     | Alger   |
+|      20190002 | CHAID   | LAMIA      | 1999-10-01     | Batna   |
+|      20190003 | BRAHIMI | SOUAD      | 2000-11-18     | S tif   |
+|      20190004 | LAMA    | SAID       | 1999-05-23     | Oran    |
++---------------+---------+------------+----------------+---------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM enseignant;
++---------------+-----------+------------+
+| MATRICULE_ENS | NOM_ENS   | PRENOM_ENS |
++---------------+-----------+------------+
+|      19980078 | BOUZIDANE | FARAH      |
+|      19990011 | FATHI     | OMAR       |
+|      20170015 | ARABI     | ZOUBIDA    |
+|      20190001 | HAROUNI   | AMINE      |
++---------------+-----------+------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM etudiantunite;
++---------------+------------+---------+---------+-------------+
+| MATRICULE_ETU | CODE_UNITE | NOTE_CC | NOTE_TP | NOTE_EXAMEN |
++---------------+------------+---------+---------+-------------+
+|      20190001 | FEI0001    |      12 |      15 |           9 |
+|      20190002 | FEI0001    |      20 |      13 |          10 |
+|      20190002 | FEI0002    |      10 |      16 |          17 |
+|      20190002 | FEI0004    |      12 |      18 |           0 |
+|      20190003 | FEI0002    |      11 |       8 |          15 |
+|      20190003 | FEI0004    |      19 |      12 |           0 |
+|      20190004 | FEI0001    |      13 |      17 |          16 |
+|      20190004 | FEI0002    |      15 |       9 |          20 |
+|      20190004 | FEI0004    |      12 |      13 |           0 |
++---------------+------------+---------+---------+-------------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT * FROM unite;
++------------+---------+------------+---------------+
+| CODE_UNITE | LIBELLE | NBR_HEURES | MATRICULE_ENS |
++------------+---------+------------+---------------+
+| FEI0001    | POO     |          6 |      20190001 |
+| FEI0002    | BDD     |          6 |      19990011 |
+| FEI0003    | RESEAU  |          3 |      20170015 |
+| FEI0004    | SYSTEME |          6 |      19980078 |
++------------+---------+------------+---------------+
+4 rows in set (0.00 sec)
+
+mysql> notee TPscriptEtudiant.lst
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'notee TPscriptEtudiant.lst' at line 1
+
+mysql> exit
